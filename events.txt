@@ -1,0 +1,22 @@
+Chaque évènement sortant est associé à l'identifiant du joueur (1 ou 2) sur lequel il s'applique.
+
+Entrants/Sortants:
+    00 Attack(object, target):  Un objet attaque
+    01 Place(card): Un joueur pose une carte sur le plateau
+    02 Pick(card): Un joueur pioche une carte de son deck
+        NB: Le client ne connaît que la carte au dessus de son deck (fluidité, ou non)
+    03 State(card, state) : L'état (attaque ou défense) d'une carte change
+
+Sortants uniquement:
+    04 Change(card, info, def): Les stats d'une carte changent
+    05 Alter(hp): Les stats du héros changent
+    06 Hero(): Caste la compétence du héros
+    07 Hand(card): Le joueur se voit ajouter une carte dans sa main
+    08 Error(message): Une erreur est survenue
+    09 Win(): Le joueur gagne
+    0A Lose(): Le joueur perd
+    0B Quit(): Le joueur quitte la partie
+    0C Surrender(): Le joueur se rend
+
+TODO Sérialisation des évènements sortants
+TODO Définir les actions et le contexte de jeu (plateau, joueurs, tout ça)
