@@ -1,6 +1,6 @@
 package com.iutdeck.server.events;
 
-import com.iutdeck.server.GameObject;
+import com.iutdeck.server.objects.GameObject;
 import com.iutdeck.server.IngoingEvent;
 import com.iutdeck.server.OutgoingEvent;
 

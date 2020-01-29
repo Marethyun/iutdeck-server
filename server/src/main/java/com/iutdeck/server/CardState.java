@@ -1,6 +1,12 @@
 package com.iutdeck.server;
 
 public enum CardState {
-    ATTACK,
-    DEFENSE;
+    ATTACK(true),
+    DEFENSE(false);
+
+    public final boolean representation;
+
+    CardState(boolean representation) {
+        this.representation = representation;
+    }
 }

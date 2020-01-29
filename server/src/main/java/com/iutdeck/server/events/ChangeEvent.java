@@ -1,6 +1,6 @@
 package com.iutdeck.server.events;
 
-import com.iutdeck.server.Card;
+import com.iutdeck.server.objects.Card;
 import com.iutdeck.server.OutgoingEvent;
 
 public final class ChangeEvent implements OutgoingEvent {
