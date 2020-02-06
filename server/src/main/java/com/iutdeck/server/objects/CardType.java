@@ -1,20 +1,20 @@
 package com.iutdeck.server.objects;
 
 public enum CardType {
-    BUFFER(0, 0, target -> {
-        if (target instanceof Card) {
-            ((Card) target).modify(card -> card.setDefense(card.getDefense() + 2));
-            return true;
-        } else return false;
+    BUFFER(null, null, new Castable[]{
+            (Castable<Card, Card>) (ctx, card, target) -> target.modify(element -> element.defense -= 2),
     }),
 
-    CRACK(10, 10, target -> false);
+    CRACK(10, 10, new Castable[]{
+            Card.ATTACK_CARD,
+            Card.ATTACK_HERO
+    });
 
-    public final int info;
-    public final int defense;
-    public final Castable action;
+    public final Integer info;
+    public final Integer defense;
+    public final Castable<Card, ?>[] action;
 
-    CardType(int info, int defense, Castable action) {
+    CardType(Integer info, Integer defense, Castable<Card, ?>[] action) {
         this.info = info;
         this.defense = defense;
         this.action = action;

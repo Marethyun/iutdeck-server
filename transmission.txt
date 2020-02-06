@@ -1,0 +1,103 @@
+Chaque évènement sortant est associé à l'identifiant du joueur (1 ou 2) sur lequel il s'applique.
+
+Entrants/Sortants:
+    Cast(element, target): Cast d'un élément sur un autre
+        carte en main sur un carte posée -> buff ou débuff
+        carte en main sur plateau -> carte posée
+        carte posée sur carte adverse -> attaque d'une carte
+        carte posée sur prof -> attaque d'une carte
+        héros sur quelque chose -> cast de la compétence du héros
+    State(card, state): L'état (attaque ou défense) d'une carte change
+    Surrender(): Le joueur concerné se rend
+
+Sortants uniquement:
+    Card(card, info, def): Les stats d'une carte changent
+    Hero(hp): Les stats du héros changent
+    Error(message): Une erreur est survenue
+    End(): La partie se termine
+        Si l'un des joueurs se rend
+        Si l'un des joueurs quitte
+        Si l'un des joueurs gagne
+        S'il y a eu une erreur
+
+TODO: Sérialisation des évènements pour transmission
+TODO: Évènements manquants ? (transmission des nouvelles cartes, données additionnelles)
+
+Exemple d'évènement:
+
+{
+    "event" : {
+        "name" : "cast",
+        "element" : 1026499,
+        "target" : 956216
+    }
+}
+
+Données:
+
+Les données sont des objets sortants qui diffèrent sémantiquement des évènements
+
+Object(identifier, parent, type, properties[nullable]): Transmission d'un objet de jeu
+
+Arborescence des éléments du côté du client: root a l'identifiant 0, tous les autres identifiants sont générés aléatoirement
+Du côté du serveur, il n'y a bien sûr pas "player/opponent" mais "player1", "player2"
+
+root
+    player
+        hero
+        hand
+            card1
+            card2
+        board
+            card3
+            card4
+        deck
+    opponent
+        hero
+        hand
+            card5
+            card6
+        board
+            card7
+            card8
+        deck
+
+Chaque client possède également un tableau associatif identifiant : objet pour les objets qu'il est autorisé à connaître (ses cartes posées et en main, les cartes du board de l'opposant, etc)
+
+Le serveur a également ce tableau associatif mais pour tous les éléments.
+
+Les types d'éléments possibles sont les suivants:
+
+ROOT
+PLAYER
+HERO
+HAND
+BOARD
+DECK
+CARD
+
+exemple de transmission de données, lorsque le serveur reçoit un cast de son Deck -> sa main, il envoie au client qui pioche:
+
+{
+    "object" : {
+        "identifier" : 9461,
+        "parent" : (identifiant de la main),
+        "type" : "CARD",
+        "properties" : {
+            "cardid" : (identifiant constant de la carte),
+            "info" : 6,
+            "defense" : 3
+        }
+    }
+}
+
+et à l'adversaire, la même chose sans les propriétés de l'objet:
+
+{
+    "object" : {
+        "identifier" : 9461,
+        "parent" : (identifiant de la main de l'adversaire),
+        "type" : "CARD",
+        "properties" : null
+    }
+}
