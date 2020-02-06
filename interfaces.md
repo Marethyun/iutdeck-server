@@ -1,5 +1,3 @@
-https://stackoverflow.com/questions/39304612/c-sharp-ssl-tls-with-socket-tcp
-
 # Description du système de multijoueur
 
 Il y a trois acteurs dans le système de multijoueur:
