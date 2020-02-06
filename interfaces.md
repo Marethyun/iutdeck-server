@@ -18,7 +18,6 @@ Un message (peu importe le contexte) est transmis en JSON sous les formes:
 ```
 Ou
 ```json
-[...]
 {
     "message_name" : "nom_message",
     "properties" : {
@@ -26,15 +25,14 @@ Ou
         "propriété2" : "valeur2"
     }
 }
-[...]
 ```
 
 Lorsqu'on a besoin d'y faire référence indirectement (publication des historiques de partie, association avec un joueur, etc..)
 
 Les évènements sont les suivants:
 
-> `auth(username, password)` - **C vers A**
+> `auth(username, password)` **C vers A**
 
 Demande l'authentification du joueur, en transmettant son nom d'utilisateur et son mot de passe.
 
-> `auth_tokens(user_token, game_token)` - **A** -> **C**
+> `auth_tokens(user_token, game_token)` **A** -> **C**
