@@ -183,7 +183,7 @@ Par exemple, notifier que c'est désormais le tour de l'adversaire:
 **C** décide de quitter le salon, ou **S** l'expulse.
 La connexion se termine après l'échange.
 
-> `ready(ready)` **C** <> **S**
+> `ready(ready)` **C** vers **S**
 
 Lorsque **C** est dans un salon, change son état (prêt à lancer le chargement de la partie ou pas).
 
@@ -191,7 +191,7 @@ Lorsque **C** est dans un salon, change son état (prêt à lancer le chargement
 
 Notifie que la partie démarre
 
-> `initialize(game_objects)`
+> `initialize(game_objects)` **S** vers **C**
 
 Envoie la liste des objets de jeu sous la forme d'un tableau JSON. Un objet de jeu (gameobject) est représenté de cette manière: (exemple d'une carte)
 
@@ -216,7 +216,7 @@ Le client **C** concerné peut ainsi construire l'arbre des objets et les affich
 
 Lorsque les deux **C** connectés ont terminé de charger les éléments de jeu et que la partie peut être lancée, ils envoient un évènement `all_set` à **S** pour le notifier qu'ils ont tout reçu et que la partie peut commencer.
 
-> `game_started()`
+> `game_started()` **S** vers **C**
 
 Notifie que la partie a commencé.
 
