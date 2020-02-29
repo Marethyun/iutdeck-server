@@ -9,7 +9,7 @@ import io.netty.handler.codec.MessageToMessageCodec;
 import java.util.Arrays;
 import java.util.List;
 
-public class FormalizedToSpecializedCodec extends MessageToMessageCodec<FormalizedMessage, GameMessage> {
+public final class FormalizedToSpecializedCodec extends MessageToMessageCodec<FormalizedMessage, GameMessage> {
 
     private final List<MapperRow> mappers;
 

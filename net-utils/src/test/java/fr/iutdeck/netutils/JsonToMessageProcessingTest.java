@@ -18,8 +18,6 @@ public class JsonToMessageProcessingTest {
 
     private static final String validJson = "{\"name\":\"error\",\"properties\": {\"message\":\"Rhello\", \"code\":27}}";
 
-    private final Gson gson = new Gson();
-
     @Test
     public void testSuccess() {
         final Gson gson = new Gson();
