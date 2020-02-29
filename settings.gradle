@@ -2,4 +2,5 @@ rootProject.name = 'iutdeck-server'
 include 'server'
 include 'authentication'
 include 'net-utils'
+include 'messages'
 
