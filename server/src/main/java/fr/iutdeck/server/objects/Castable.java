@@ -1,6 +1,6 @@
-package com.iutdeck.server.objects;
+package fr.iutdeck.server.objects;
 
-import com.iutdeck.server.GameContext;
+import fr.iutdeck.server.GameContext;
 
 public interface Castable<E, T> {
     /**

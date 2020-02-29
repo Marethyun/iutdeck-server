@@ -1,4 +1,4 @@
-package com.iutdeck.server.objects;
+package fr.iutdeck.server.objects;
 
 public enum HeroType {
     ;

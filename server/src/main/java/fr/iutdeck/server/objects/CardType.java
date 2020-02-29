@@ -1,4 +1,4 @@
-package com.iutdeck.server.objects;
+package fr.iutdeck.server.objects;
 
 @SuppressWarnings("unchecked")
 public enum CardType {
