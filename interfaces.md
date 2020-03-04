@@ -68,7 +68,35 @@ Le client demande une liste de serveurs en fournissant son jeton d'utilisateur.
     "name" : "un super serveur!",
     "address" : "chihuahua.iut-deck.fr",
     "port" : 4257,
+    "online" : false,
     "official" : true
+}
+```
+
+
+Exemple de message complet:
+
+```json
+{
+    "name" : "servers",
+    "parameters" : {
+        "list" : [
+            {
+                "name" : "un super serveur!",
+                "address" : "chihuahua.iut-deck.fr",
+                "port" : 4257,
+                "online" : true,
+                "official" : true
+            },
+            {
+                "name" : "Le serveur de tes rêves",
+                "address" : "chey.marethyun.ovh",
+                "port" : 4257,
+                "online" : false,
+                "official" : false
+            }
+        ]
+    }
 }
 ```
 
@@ -94,7 +122,7 @@ Exemple d'un évènement illustrant la reddition du joueur n°123456789:
 
 ```json
 {
-    "name" : "surrender",
+    "type" : "surrender",
     "player" : 123456789,
     "time_fired" : 1000198800,
     "properties" : {}
@@ -173,7 +201,7 @@ Par exemple, notifier que c'est désormais le tour de l'adversaire:
 {
     "opponent_event" : {
         "name" : "your_turn",
-        "properties" : {}
+        "properties" : null
     }
 }
 ```
