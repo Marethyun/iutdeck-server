@@ -1,48 +1,47 @@
 package fr.iutdeck.messages;
 
+import fr.iutdeck.messages.mapping.MessageMapper;
+import fr.iutdeck.messages.mapping.MissingParametersException;
+import fr.iutdeck.messages.mapping.NameMismatchException;
+
 import java.util.HashMap;
 
 public class ErrorMessage implements GameMessage {
 
-    private final String message;
-    private final short code;
+    public static final String NAME = "error";
+    private static final String PARAMETER_MESSAGE = "message";
+    private static final String PARAMETER_CODE = "code";
+
+    public final String message;
+    public final short code;
 
     public ErrorMessage(String message, short code) {
         this.message = message;
         this.code = code;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public short getCode() {
-        return code;
-    }
-
-    public static class Mapper extends MessageMapper<ErrorMessage> {
+    public static class Mapper implements MessageMapper<ErrorMessage> {
 
         @Override
         public FormalizedMessage formalize(ErrorMessage message) {
-            //if (!(message instanceof ErrorMessage)) throw new MappingException(this, "Wrong parameter");
-
             HashMap<String, Object> parameters = new HashMap<>();
-            parameters.put("message", message.message);
-            parameters.put("code", message.code);
+            parameters.put(PARAMETER_MESSAGE, message.message);
+            parameters.put(PARAMETER_CODE, message.code);
 
-            return new FormalizedMessage("error", parameters);
+            return new FormalizedMessage(NAME, parameters);
         }
 
         @Override
-        public ErrorMessage specialize(FormalizedMessage message) throws MappingException {
-            if (!message.getParameters().containsKey("message") || !message.getParameters().containsKey("code")) {
-                throw new MappingException(this, "Missing parameters");
-            }
+        public ErrorMessage specialize(FormalizedMessage message) throws MissingParametersException {
+            if (!message.getParameters().containsKey(PARAMETER_MESSAGE) || !message.getParameters().containsKey(PARAMETER_CODE))
+                throw new MissingParametersException(this);
 
-            String errorMessage = (String) message.getParameters().get("message");
-            short errorCode = ((Number) message.getParameters().get("code")).shortValue();
+            if (!message.getName().equals(NAME))
+                throw new NameMismatchException(this);
 
-            return new ErrorMessage(errorMessage, errorCode);
+            short errorCode = ((Number) message.getParameters().get(PARAMETER_CODE)).shortValue();
+
+            return new ErrorMessage((String) message.getParameters().get(PARAMETER_MESSAGE), errorCode);
         }
     }
 }

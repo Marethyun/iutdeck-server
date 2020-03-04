@@ -33,6 +33,7 @@ public final class FormalizedMessage {
         return parameters;
     }
 
+    // TODO Change
     @Override
     public String toString() {
         return "FormalizedMessage{" +

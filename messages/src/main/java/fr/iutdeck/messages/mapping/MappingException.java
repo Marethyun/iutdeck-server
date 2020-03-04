@@ -1,4 +1,4 @@
-package fr.iutdeck.messages;
+package fr.iutdeck.messages.mapping;
 
 public class MappingException extends RuntimeException {
     public MappingException(MessageMapper<?> mapper, String message) {
