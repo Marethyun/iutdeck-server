@@ -2,7 +2,6 @@ package fr.iutdeck.netutils;
 
 import fr.iutdeck.messages.FormalizedMessage;
 import fr.iutdeck.messages.GameMessage;
-import fr.iutdeck.messages.MessageMapper;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
 
@@ -11,9 +10,9 @@ import java.util.List;
 
 public final class FormalizedToSpecializedCodec extends MessageToMessageCodec<FormalizedMessage, GameMessage> {
 
-    private final List<MapperRow> mappers;
+    private List<MappingInfo> mappers;
 
-    public FormalizedToSpecializedCodec(MapperRow... mappers) {
+    public FormalizedToSpecializedCodec(MappingInfo... mappers) {
         this.mappers = Arrays.asList(mappers);
     }
 
@@ -33,16 +32,11 @@ public final class FormalizedToSpecializedCodec extends MessageToMessageCodec<Fo
         );
     }
 
-    @SuppressWarnings("rawtypes")
-    public static class MapperRow {
-        public final String messageName;
-        public final Class<? extends GameMessage> messageClass;
-        public final MessageMapper mapper;
+    public List<MappingInfo> getMappers() {
+        return mappers;
+    }
 
-        public MapperRow(String messageName, Class<? extends GameMessage> messageClass, MessageMapper mapper) {
-            this.messageName = messageName;
-            this.messageClass = messageClass;
-            this.mapper = mapper;
-        }
+    public void setMappers(MappingInfo... mappers) {
+        this.mappers = Arrays.asList(mappers);
     }
 }

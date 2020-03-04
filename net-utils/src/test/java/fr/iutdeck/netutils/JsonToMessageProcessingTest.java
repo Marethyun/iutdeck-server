@@ -29,8 +29,8 @@ public class JsonToMessageProcessingTest {
                 new ByteToJsonCodec(gson),
                 new JsonToFormalizedCodec(gson),
                 new FormalizedToSpecializedCodec(
-                        new FormalizedToSpecializedCodec.MapperRow("ok", OkMessage.class, new OkMessage.Mapper()),
-                        new FormalizedToSpecializedCodec.MapperRow("error", ErrorMessage.class, new ErrorMessage.Mapper())
+                        new MappingInfo("ok", OkMessage.class, new OkMessage.Mapper()),
+                        new MappingInfo("error", ErrorMessage.class, new ErrorMessage.Mapper())
                 )
         );
 
