@@ -1,13 +1,8 @@
 package fr.iutdeck.messages;
 
-import fr.iutdeck.messages.mapping.MappingException;
-import fr.iutdeck.messages.mapping.MessageMapper;
-import fr.iutdeck.messages.mapping.MissingParametersException;
-import fr.iutdeck.messages.mapping.NameMismatchException;
-
 import java.util.HashMap;
 
-public class UserMessage implements GameMessage {
+public final class UserMessage implements GameMessage {
     public static final String NAME = "user";
     private static final String PARAMETER_USER_ID = "user_id";
     private static final String PARAMETER_PSEUDONYM = "pseudonym";
@@ -20,26 +15,23 @@ public class UserMessage implements GameMessage {
         this.pseudonym = pseudonym;
     }
 
-    public static final class Mapper implements MessageMapper<UserMessage> {
+    public static final class Formalizer implements MessageFormalizer<UserMessage> {
 
         @Override
-        public FormalizedMessage formalize(UserMessage message) throws MappingException {
+        public FormalizedMessage formalize(UserMessage message) {
             HashMap<String, Object> parameters = new HashMap<>();
             parameters.put(PARAMETER_USER_ID, message.userId);
             parameters.put(PARAMETER_PSEUDONYM, message.pseudonym);
 
             return new FormalizedMessage(NAME, parameters);
         }
+    }
+
+    public static final class Specializer implements MessageSpecializer<UserMessage> {
 
         @Override
-        public UserMessage specialize(FormalizedMessage message) throws MappingException {
+        public UserMessage specialize(FormalizedMessage message) {
             HashMap<String, Object> parameters = message.getParameters();
-
-            if (!parameters.containsKey(PARAMETER_USER_ID) || !parameters.containsKey(PARAMETER_PSEUDONYM))
-                throw new MissingParametersException(this);
-
-            if (!message.getName().equals(NAME))
-                throw new NameMismatchException(this);
 
             int userId = ((Number) parameters.get(PARAMETER_USER_ID)).intValue();
 

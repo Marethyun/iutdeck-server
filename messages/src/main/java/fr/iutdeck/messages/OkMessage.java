@@ -1,8 +1,19 @@
 package fr.iutdeck.messages;
 
-import fr.iutdeck.messages.mapping.MappingException;
-import fr.iutdeck.messages.mapping.MessageMapper;
+public final class OkMessage implements GameMessage {
+    public static final String NAME = "ok";
 
-public class OkMessage implements GameMessage {
+    public static final class Formalizer implements MessageFormalizer<OkMessage> {
+        @Override
+        public FormalizedMessage formalize(OkMessage message) {
+            return new FormalizedMessage(NAME, null);
+        }
+    }
 
+    public static final class Specializer implements MessageSpecializer<OkMessage> {
+        @Override
+        public OkMessage specialize(FormalizedMessage message) {
+            return new OkMessage();
+        }
+    }
 }
