@@ -1,12 +1,9 @@
 package fr.iutdeck.server;
 
 import com.google.gson.Gson;
-import fr.iutdeck.messages.InfoMessage;
-import fr.iutdeck.messages.mapping.LightMessageMapper;
 import fr.iutdeck.netutils.ByteToJsonCodec;
 import fr.iutdeck.netutils.FormalizedToSpecializedCodec;
 import fr.iutdeck.netutils.JsonToFormalizedCodec;
-import fr.iutdeck.netutils.MappingInfo;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -22,7 +19,7 @@ public class Server implements Runnable {
         public void load(ChannelPipeline pipeline) {
             FormalizedToSpecializedCodec flag = (FormalizedToSpecializedCodec) pipeline.get(ServerInitializer.FLAG_NAME);
             flag.setMappers(
-                    new MappingInfo("info", InfoMessage.class, new LightMessageMapper<>("info", InfoMessage::new))
+                    // FIXME new MappingInfo("info", InfoMessage.class, new LightMessageMapper<>("info", InfoMessage::new))
             );
         }
 

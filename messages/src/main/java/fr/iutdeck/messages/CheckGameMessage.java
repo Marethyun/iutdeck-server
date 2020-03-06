@@ -1,13 +1,8 @@
 package fr.iutdeck.messages;
 
-import fr.iutdeck.messages.mapping.MappingException;
-import fr.iutdeck.messages.mapping.MessageMapper;
-import fr.iutdeck.messages.mapping.MissingParametersException;
-import fr.iutdeck.messages.mapping.NameMismatchException;
-
 import java.util.HashMap;
 
-public class CheckGameMessage implements GameMessage {
+public final class CheckGameMessage implements GameMessage {
     public static final String NAME = "check_game";
     private static final String PARAMETER_GAME_TOKEN = "game_token";
 
@@ -17,25 +12,20 @@ public class CheckGameMessage implements GameMessage {
         this.gameToken = gameToken;
     }
 
-    public static final class Mapper implements MessageMapper<CheckGameMessage> {
-
+    public static final class Formalizer implements MessageFormalizer<CheckGameMessage> {
         @Override
-        public FormalizedMessage formalize(CheckGameMessage message) throws MappingException {
+        public FormalizedMessage formalize(CheckGameMessage message) {
             HashMap<String, Object> parameters = new HashMap<>();
             parameters.put(PARAMETER_GAME_TOKEN, message.gameToken);
 
             return new FormalizedMessage(NAME, parameters);
         }
+    }
 
+    public static final class Specializer implements MessageSpecializer<CheckGameMessage> {
         @Override
-        public CheckGameMessage specialize(FormalizedMessage message) throws MappingException {
+        public CheckGameMessage specialize(FormalizedMessage message) {
             HashMap<String, Object> parameters = message.getParameters();
-
-            if (!parameters.containsKey(PARAMETER_GAME_TOKEN))
-                throw new MissingParametersException(this);
-
-            if (!message.getName().equals(NAME))
-                throw new NameMismatchException(this);
 
             return new CheckGameMessage((String) parameters.get(PARAMETER_GAME_TOKEN));
         }

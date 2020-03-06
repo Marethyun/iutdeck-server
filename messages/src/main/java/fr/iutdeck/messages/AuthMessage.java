@@ -1,13 +1,8 @@
 package fr.iutdeck.messages;
 
-import fr.iutdeck.messages.mapping.MappingException;
-import fr.iutdeck.messages.mapping.MessageMapper;
-import fr.iutdeck.messages.mapping.MissingParametersException;
-import fr.iutdeck.messages.mapping.NameMismatchException;
-
 import java.util.HashMap;
 
-public class AuthMessage {
+public final class AuthMessage implements GameMessage {
     public static final String NAME = "auth";
     private static final String PARAMETER_USERNAME = "username";
     private static final String PARAMETER_PASSWORD = "password";
@@ -20,26 +15,21 @@ public class AuthMessage {
         this.password = password;
     }
 
-    public static final class Mapper implements MessageMapper<AuthMessage> {
-
+    public static final class Formalizer implements MessageFormalizer<AuthMessage> {
         @Override
-        public FormalizedMessage formalize(AuthMessage message) throws MappingException {
+        public FormalizedMessage formalize(AuthMessage message) {
             HashMap<String, Object> parameters = new HashMap<>();
             parameters.put(PARAMETER_USERNAME, message.username);
             parameters.put(PARAMETER_PASSWORD, message.password);
 
             return new FormalizedMessage(NAME, parameters);
         }
+    }
 
+    public static final class Specializer implements MessageSpecializer<AuthMessage> {
         @Override
-        public AuthMessage specialize(FormalizedMessage message) throws MappingException {
+        public AuthMessage specialize(FormalizedMessage message) {
             HashMap<String, Object> parameters = message.getParameters();
-
-            if (!parameters.containsKey(PARAMETER_USERNAME) || !parameters.containsKey(PARAMETER_PASSWORD))
-                throw new MissingParametersException(this);
-
-            if (!message.getName().equals(NAME))
-                throw new NameMismatchException(this);
 
             return new AuthMessage((String) parameters.get(PARAMETER_USERNAME), (String) parameters.get(PARAMETER_PASSWORD));
         }

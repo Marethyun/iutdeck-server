@@ -1,13 +1,8 @@
 package fr.iutdeck.messages;
 
-import fr.iutdeck.messages.mapping.MappingException;
-import fr.iutdeck.messages.mapping.MessageMapper;
-import fr.iutdeck.messages.mapping.MissingParametersException;
-import fr.iutdeck.messages.mapping.NameMismatchException;
-
 import java.util.HashMap;
 
-public class PokeMessage implements GameMessage {
+public final class PokeMessage implements GameMessage {
     public static final String NAME = "poke";
     private static final String PARAMETER_NAME = "name";
     private static final String PARAMETER_ADDRESS = "address";
@@ -23,10 +18,9 @@ public class PokeMessage implements GameMessage {
         this.serverPort = serverPort;
     }
 
-    public static final class Mapper implements MessageMapper<PokeMessage> {
-
+    public static final class Formalizer implements MessageFormalizer<PokeMessage> {
         @Override
-        public FormalizedMessage formalize(PokeMessage message) throws MappingException {
+        public FormalizedMessage formalize(PokeMessage message) {
             HashMap<String, Object> parameters = new HashMap<>();
             parameters.put(PARAMETER_NAME, message.serverName);
             parameters.put(PARAMETER_ADDRESS, message.serverAddress);
@@ -34,16 +28,12 @@ public class PokeMessage implements GameMessage {
 
             return new FormalizedMessage(NAME, parameters);
         }
+    }
 
+    public static final class Specializer implements MessageSpecializer<PokeMessage> {
         @Override
-        public PokeMessage specialize(FormalizedMessage message) throws MappingException {
+        public PokeMessage specialize(FormalizedMessage message) {
             HashMap<String, Object> parameters = message.getParameters();
-
-            if (!parameters.containsKey(PARAMETER_NAME) || !parameters.containsKey(PARAMETER_ADDRESS) || !parameters.containsKey(PARAMETER_PORT))
-                throw new MissingParametersException(this);
-
-            if (!message.getName().equals(NAME))
-                throw new NameMismatchException(this);
 
             int port = ((Number) parameters.get(PARAMETER_PORT)).intValue();
 

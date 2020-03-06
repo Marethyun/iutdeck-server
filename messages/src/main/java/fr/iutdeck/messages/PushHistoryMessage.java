@@ -1,14 +1,9 @@
 package fr.iutdeck.messages;
 
-import fr.iutdeck.messages.mapping.MappingException;
-import fr.iutdeck.messages.mapping.MessageMapper;
-import fr.iutdeck.messages.mapping.MissingParametersException;
-import fr.iutdeck.messages.mapping.NameMismatchException;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class PushHistoryMessage implements GameMessage {
+public final class PushHistoryMessage implements GameMessage {
     public static final String NAME = "push_history";
     private static final String PARAMETER_APPLICATION_TOKEN = "application_token";
     private static final String PARAMETER_PLAYER1_ID = "player1_id";
@@ -72,10 +67,9 @@ public class PushHistoryMessage implements GameMessage {
         }
     }
 
-    public static final class Mapper implements MessageMapper<PushHistoryMessage> {
-
+    public static final class Formalizer implements MessageFormalizer<PushHistoryMessage> {
         @Override
-        public FormalizedMessage formalize(PushHistoryMessage message) throws MappingException {
+        public FormalizedMessage formalize(PushHistoryMessage message) {
             HashMap<String, Object> parameters = new HashMap<>();
             parameters.put(PARAMETER_APPLICATION_TOKEN, message.applicationToken);
             parameters.put(PARAMETER_PLAYER1_ID, message.player1Id);
@@ -99,17 +93,14 @@ public class PushHistoryMessage implements GameMessage {
 
             return new FormalizedMessage(NAME, parameters);
         }
+    }
 
+
+    public static final class Specializer implements MessageSpecializer<PushHistoryMessage> {
         @SuppressWarnings("unchecked")
         @Override
-        public PushHistoryMessage specialize(FormalizedMessage message) throws MappingException {
+        public PushHistoryMessage specialize(FormalizedMessage message) {
             HashMap<String, Object> parameters = message.getParameters();
-
-            // En gros si aucun paramètre ne manque
-            if (!parameters.containsKey(PARAMETER_APPLICATION_TOKEN) || !parameters.containsKey(PARAMETER_PLAYER1_ID) || !parameters.containsKey(PARAMETER_PLAYER2_ID) || !parameters.containsKey(PARAMETER_WINNER_ID) || !parameters.containsKey(PARAMETER_TIME_STARTED) || !parameters.containsKey(PARAMETER_TIME_ENDED) || !parameters.containsKey(PARAMETER_EVENTS))
-
-            if (!message.getName().equals(NAME))
-                throw new NameMismatchException(this);
 
             int playerId1 = ((Number) parameters.get(PARAMETER_PLAYER1_ID)).intValue();
             int playerId2 = ((Number) parameters.get(PARAMETER_PLAYER2_ID)).intValue();
@@ -122,7 +113,7 @@ public class PushHistoryMessage implements GameMessage {
             for (HashMap<String, Object> mappedEvent : mappedEvents) {
                 EventType type = EventType.fromName((String) mappedEvent.get(PARAMETER_EVENT_TYPE));
                 if (type == null)
-                    throw new MappingException(this, "Encountered an invalid event type");
+                    throw new RuntimeException("Encountered an invalid event type"); // TODO Specialize exception
                 int playerId = ((Number) mappedEvent.get(PARAMETER_EVENT_PLAYER_ID)).intValue();
                 long timeFired = ((Number) mappedEvent.get(PARAMETER_EVENT_TIME_FIRED)).longValue();
 

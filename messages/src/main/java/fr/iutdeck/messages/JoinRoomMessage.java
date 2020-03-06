@@ -1,10 +1,5 @@
 package fr.iutdeck.messages;
 
-import fr.iutdeck.messages.mapping.MappingException;
-import fr.iutdeck.messages.mapping.MessageMapper;
-import fr.iutdeck.messages.mapping.MissingParametersException;
-import fr.iutdeck.messages.mapping.NameMismatchException;
-
 import java.util.HashMap;
 
 public final class JoinRoomMessage implements GameMessage {
@@ -20,26 +15,21 @@ public final class JoinRoomMessage implements GameMessage {
         this.gameToken = gameToken;
     }
 
-    public static final class Mapper implements MessageMapper<JoinRoomMessage> {
-
+    public static final class Formalizer implements MessageFormalizer<JoinRoomMessage> {
         @Override
-        public FormalizedMessage formalize(JoinRoomMessage message) throws MappingException {
+        public FormalizedMessage formalize(JoinRoomMessage message) {
             HashMap<String, Object> parameters = new HashMap<>();
-            parameters.put("room_id", message.roomId);
-            parameters.put("game_token", message.gameToken);
+            parameters.put(PARAMETER_ROOM_ID, message.roomId);
+            parameters.put(PARAMETER_GAME_TOKEN, message.gameToken);
 
             return new FormalizedMessage(NAME, parameters);
         }
+    }
 
+    public static final class Specializer implements MessageSpecializer<JoinRoomMessage> {
         @Override
-        public JoinRoomMessage specialize(FormalizedMessage message) throws MappingException {
+        public JoinRoomMessage specialize(FormalizedMessage message) {
             HashMap<String, Object> parameters = message.getParameters();
-
-            if (!parameters.containsKey(PARAMETER_ROOM_ID) || !parameters.containsKey(PARAMETER_GAME_TOKEN))
-                throw new MissingParametersException(this);
-
-            if (!message.getName().equals(NAME))
-                throw new NameMismatchException(this);
 
             int roomId = ((Number) parameters.get(PARAMETER_ROOM_ID)).intValue();
 

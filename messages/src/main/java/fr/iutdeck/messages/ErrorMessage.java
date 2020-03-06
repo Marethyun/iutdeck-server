@@ -1,12 +1,8 @@
 package fr.iutdeck.messages;
 
-import fr.iutdeck.messages.mapping.MessageMapper;
-import fr.iutdeck.messages.mapping.MissingParametersException;
-import fr.iutdeck.messages.mapping.NameMismatchException;
-
 import java.util.HashMap;
 
-public class ErrorMessage implements GameMessage {
+public final class ErrorMessage implements GameMessage {
 
     public static final String NAME = "error";
     private static final String PARAMETER_MESSAGE = "message";
@@ -20,8 +16,7 @@ public class ErrorMessage implements GameMessage {
         this.code = code;
     }
 
-    public static class Mapper implements MessageMapper<ErrorMessage> {
-
+    public static final class Formalizer implements MessageFormalizer<ErrorMessage> {
         @Override
         public FormalizedMessage formalize(ErrorMessage message) {
             HashMap<String, Object> parameters = new HashMap<>();
@@ -30,18 +25,16 @@ public class ErrorMessage implements GameMessage {
 
             return new FormalizedMessage(NAME, parameters);
         }
+    }
 
+    public static final class Specializer implements MessageSpecializer<ErrorMessage> {
         @Override
-        public ErrorMessage specialize(FormalizedMessage message) throws MissingParametersException {
-            if (!message.getParameters().containsKey(PARAMETER_MESSAGE) || !message.getParameters().containsKey(PARAMETER_CODE))
-                throw new MissingParametersException(this);
+        public ErrorMessage specialize(FormalizedMessage message) {
+            HashMap<String, Object> parameters = message.getParameters();
 
-            if (!message.getName().equals(NAME))
-                throw new NameMismatchException(this);
+            short errorCode = ((Number) parameters.get(PARAMETER_CODE)).shortValue();
 
-            short errorCode = ((Number) message.getParameters().get(PARAMETER_CODE)).shortValue();
-
-            return new ErrorMessage((String) message.getParameters().get(PARAMETER_MESSAGE), errorCode);
+            return new ErrorMessage((String) parameters.get(PARAMETER_MESSAGE), errorCode);
         }
     }
 }

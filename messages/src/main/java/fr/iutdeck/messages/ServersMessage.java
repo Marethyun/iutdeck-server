@@ -1,15 +1,10 @@
 package fr.iutdeck.messages;
 
-import fr.iutdeck.messages.mapping.MappingException;
-import fr.iutdeck.messages.mapping.MessageMapper;
-import fr.iutdeck.messages.mapping.MissingParametersException;
-import fr.iutdeck.messages.mapping.NameMismatchException;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class ServersMessage {
+public final class ServersMessage implements GameMessage {
     public static final String NAME = "servers";
     private static final String PARAMETER_LIST = "list";
 
@@ -41,10 +36,9 @@ public class ServersMessage {
         }
     }
 
-    public static final class Mapper implements MessageMapper<ServersMessage> {
-
+    public static final class Formalizer implements MessageFormalizer<ServersMessage> {
         @Override
-        public FormalizedMessage formalize(ServersMessage message) throws MappingException {
+        public FormalizedMessage formalize(ServersMessage message) {
             HashMap<String, Object> parameters = new HashMap<>();
             ArrayList<HashMap<String, Object>> serversList = new ArrayList<>();
 
@@ -62,19 +56,13 @@ public class ServersMessage {
 
             return new FormalizedMessage(NAME, parameters);
         }
+    }
 
+    public static final class Specializer implements MessageSpecializer<ServersMessage> {
         @SuppressWarnings("unchecked")
         @Override
-        public ServersMessage specialize(FormalizedMessage message) throws MappingException {
-            HashMap<String, Object> parameters = message.getParameters();
-
-            if (!parameters.containsKey(PARAMETER_LIST))
-                throw new MissingParametersException(this);
-
-            if (!message.getName().equals(NAME))
-                throw new NameMismatchException(this);
-
-            ArrayList<HashMap<String, Object>> mappedServerEntries = (ArrayList<HashMap<String, Object>>) parameters.get(PARAMETER_LIST);
+        public ServersMessage specialize(FormalizedMessage message) {
+            ArrayList<HashMap<String, Object>> mappedServerEntries = (ArrayList<HashMap<String, Object>>) message.getParameters().get(PARAMETER_LIST);
             ArrayList<ServerEntry> entries = new ArrayList<>();
 
             for (HashMap<String, Object> mappedServerEntry : mappedServerEntries) {

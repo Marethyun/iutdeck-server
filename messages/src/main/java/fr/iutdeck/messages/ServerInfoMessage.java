@@ -1,13 +1,8 @@
 package fr.iutdeck.messages;
 
-import fr.iutdeck.messages.mapping.MappingException;
-import fr.iutdeck.messages.mapping.MessageMapper;
-import fr.iutdeck.messages.mapping.MissingParametersException;
-import fr.iutdeck.messages.mapping.NameMismatchException;
-
 import java.util.HashMap;
 
-public class ServerInfoMessage implements GameMessage {
+public final class ServerInfoMessage implements GameMessage {
     public static final String NAME = "server_info";
     private static final String PARAMETER_NAME = "name";
     private static final String PARAMETER_ONLINE = "online";
@@ -23,10 +18,9 @@ public class ServerInfoMessage implements GameMessage {
         this.rooms = rooms;
     }
 
-    public static final class Mapper implements MessageMapper<ServerInfoMessage> {
-
+    public static final class Formalizer implements MessageFormalizer<ServerInfoMessage> {
         @Override
-        public FormalizedMessage formalize(ServerInfoMessage message) throws MappingException {
+        public FormalizedMessage formalize(ServerInfoMessage message) {
             HashMap<String, Object> parameters = new HashMap<>();
             parameters.put(PARAMETER_NAME, message.name);
             parameters.put(PARAMETER_ONLINE, message.online);
@@ -34,16 +28,13 @@ public class ServerInfoMessage implements GameMessage {
 
             return new FormalizedMessage(NAME, parameters);
         }
+    }
+
+    public static final class Specializer implements MessageSpecializer<ServerInfoMessage> {
 
         @Override
-        public ServerInfoMessage specialize(FormalizedMessage message) throws MappingException {
+        public ServerInfoMessage specialize(FormalizedMessage message) {
             HashMap<String, Object> parameters = message.getParameters();
-
-            if (!parameters.containsKey(PARAMETER_NAME) || !parameters.containsKey(PARAMETER_ONLINE) || !parameters.containsKey(PARAMETER_ROOMS))
-                throw new MissingParametersException(this);
-
-            if (!message.getName().equals(NAME))
-                throw new NameMismatchException(this);
 
             short rooms = ((Number) parameters.get(PARAMETER_ROOMS)).shortValue();
 
