@@ -1,5 +1,6 @@
 package fr.iutdeck.server.objects;
 
+import fr.iutdeck.server.Castable;
 import fr.iutdeck.server.GameContext;
 
 public final class Card extends GameObject implements Castable<Card, GameObject>, Modifiable<Card> {

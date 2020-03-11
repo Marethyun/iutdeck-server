@@ -1,4 +1,4 @@
-package fr.iutdeck.server.objects;
+package fr.iutdeck.server;
 
 import fr.iutdeck.server.GameContext;
 
