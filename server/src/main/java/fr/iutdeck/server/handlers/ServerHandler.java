@@ -11,7 +11,7 @@ public abstract class ServerHandler<I> extends SimpleChannelInboundHandler<I> {
         this.server = server;
     }
 
-    protected Server getServer() {
+    protected final Server getServer() {
         return server;
     }
 }

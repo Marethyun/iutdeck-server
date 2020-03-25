@@ -16,6 +16,16 @@ public class Room {
         this.player1 = player1;
     }
 
+    /**
+     *     Le diaporama de soutenance au format projetable
+     *
+     *     Ce même diaporama au format 6 diapositives par page
+     *
+     *     Le dossier
+     *     La répartition du travail
+     * @return
+     */
+
     public Player getPlayer2() {
         return player2;
     }

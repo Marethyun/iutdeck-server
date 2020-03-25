@@ -15,4 +15,6 @@ dependencies {
     // https://mvnrepository.com/artifact/io.netty/netty-all
     compile group: 'io.netty', name: 'netty-all', version: '4.1.45.Final'
     compile project(':net-utils')
+    compile project(':messages')
+    compile project(':game-objects')
 }

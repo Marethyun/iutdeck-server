@@ -6,7 +6,7 @@ auth(user, password)
 
 ```json
 {
-    "auth" {
+    "auth" : {
         "user" : "tartenpion",
         "password" : "azerty"
     }

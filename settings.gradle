@@ -3,4 +3,5 @@ include 'server'
 include 'authentication'
 include 'net-utils'
 include 'messages'
+include 'game-objects'
 
