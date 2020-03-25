@@ -1,5 +1,7 @@
 package fr.iutdeck.server.objects;
 
+import fr.iutdeck.server.Castable;
+
 public enum HeroType {
     ;
 

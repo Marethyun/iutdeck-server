@@ -1,42 +1,32 @@
 package fr.iutdeck.netutils;
 
-import fr.iutdeck.messages.FormalizedMessage;
-import fr.iutdeck.messages.GameMessage;
+import fr.iutdeck.messages.*;
+import fr.iutdeck.netutils.exception.InvalidFormalizedException;
+import fr.iutdeck.netutils.exception.NoFormalizerException;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
 
-import java.util.Arrays;
 import java.util.List;
 
 public final class FormalizedToSpecializedCodec extends MessageToMessageCodec<FormalizedMessage, GameMessage> {
-
-    private List<MappingInfo> mappers;
-
-    public FormalizedToSpecializedCodec(MappingInfo... mappers) {
-        this.mappers = Arrays.asList(mappers);
-    }
-
     @Override
-    protected void decode(ChannelHandlerContext channelHandlerContext, FormalizedMessage message, List<Object> list) throws RuntimeException /* FIXME TRÈS MAUVAIS */ {
-        // TODO Créer un type spécial pour ce genre d'erreurs (à traiter dans exceptionCaught du handler suivant)
-        list.add(mappers.stream().filter(row -> row.messageName.equals(message.getName())).findFirst().orElseThrow(() -> new RuntimeException(String.format("Can't find a mapper to map message %s", message))).mapper.specialize(message));
+    protected void decode(ChannelHandlerContext channelHandlerContext, FormalizedMessage message, List<Object> list) throws InvalidFormalizedException {
+        MessageSpecializer<? extends GameMessage> specializer = MessageMeta.getSpecializer(message.getName());
+
+        if (specializer == null)
+            throw new InvalidFormalizedException("Cannot retrieve specializer for the message named " + message.getName());
+
+        list.add(specializer.specialize(message)); // TODO Check cast exceptions ?
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
-    protected void encode(ChannelHandlerContext channelHandlerContext, GameMessage gameMessage, List<Object> list) throws RuntimeException /* FIXME TRÈS MAUVAIS */ {
-        // TODO Créer un type spécial pour ce genre d'erreurs (à traiter dans exceptionCaught du handler suivant)
-        list.add(
-            mappers.stream().filter(row -> row.messageClass.equals(gameMessage.getClass())).findFirst().orElseThrow(() -> new RuntimeException(String.format("Can't find a mapper to map message %s", gameMessage.getClass())))
-                .mapper.formalize(gameMessage)
-        );
-    }
+    protected void encode(ChannelHandlerContext channelHandlerContext, GameMessage gameMessage, List<Object> list) throws NoFormalizerException {
+        MessageFormalizer formalizer = MessageMeta.getFormalizer(gameMessage.getClass());
 
-    public List<MappingInfo> getMappers() {
-        return mappers;
-    }
+        if (formalizer == null)
+            throw new NoFormalizerException("Cannot retrieve formalizer for the message with class " + gameMessage.getClass());
 
-    public void setMappers(MappingInfo... mappers) {
-        this.mappers = Arrays.asList(mappers);
+        list.add(formalizer.formalize(gameMessage)); // TODO Check cast exceptions ?
     }
 }

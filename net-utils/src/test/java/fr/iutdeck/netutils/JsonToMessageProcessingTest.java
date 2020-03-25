@@ -2,7 +2,6 @@ package fr.iutdeck.netutils;
 
 import com.google.gson.Gson;
 import fr.iutdeck.messages.ErrorMessage;
-import fr.iutdeck.messages.OkMessage;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.embedded.EmbeddedChannel;
@@ -12,7 +11,8 @@ import org.junit.Test;
 import java.nio.charset.StandardCharsets;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 public class JsonToMessageProcessingTest {
 
@@ -28,16 +28,11 @@ public class JsonToMessageProcessingTest {
                 new JsonObjectDecoder(),
                 new ByteToJsonCodec(gson),
                 new JsonToFormalizedCodec(gson),
-                new FormalizedToSpecializedCodec(
-                        new MappingInfo("ok", OkMessage.class, new OkMessage.Mapper()),
-                        new MappingInfo("error", ErrorMessage.class, new ErrorMessage.Mapper())
-                )
+                new FormalizedToSpecializedCodec()
         );
 
         channel.writeInbound(input);
         channel.finish();
-
-        //Object in = channel.readInbound()
 
         assertEquals(channel.inboundMessages().size(), 1);
         assertThat(channel.readInbound(), instanceOf(ErrorMessage.class));

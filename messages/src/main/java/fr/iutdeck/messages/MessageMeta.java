@@ -1,6 +1,6 @@
 package fr.iutdeck.messages;
 
-public enum Messages {
+public enum MessageMeta {
     AUTH                (AuthMessage.NAME,              AuthMessage.class,              new AuthMessage.Formalizer(),               new AuthMessage.Specializer()),
     CHECK_GAME          (CheckGameMessage.NAME,         CheckGameMessage.class,         new CheckGameMessage.Formalizer(),          new CheckGameMessage.Specializer()),
     ERROR               (ErrorMessage.NAME,             ErrorMessage.class,             new ErrorMessage.Formalizer(),              new ErrorMessage.Specializer()),
@@ -24,7 +24,7 @@ public enum Messages {
     public final MessageFormalizer<? extends GameMessage> formalizer;
     public final MessageSpecializer<? extends GameMessage> specializer;
 
-    Messages(String name, Class<? extends GameMessage> clazz, MessageFormalizer<? extends GameMessage> formalizer, MessageSpecializer<? extends GameMessage> specializer) {
+    MessageMeta(String name, Class<? extends GameMessage> clazz, MessageFormalizer<? extends GameMessage> formalizer, MessageSpecializer<? extends GameMessage> specializer) {
         this.name = name;
         this.clazz = clazz;
         this.formalizer = formalizer;
@@ -33,7 +33,7 @@ public enum Messages {
 
     @SuppressWarnings("unchecked")
     public static <T extends GameMessage> MessageFormalizer<T> getFormalizer(Class<T> clazz) {
-        for (Messages entry : values()) {
+        for (MessageMeta entry : values()) {
             if (entry.clazz.equals(clazz))
                 return (MessageFormalizer<T>) entry.formalizer;
         }
@@ -42,7 +42,7 @@ public enum Messages {
     }
 
     public static MessageSpecializer<? extends GameMessage> getSpecializer(String name) {
-        for (Messages entry : values()) {
+        for (MessageMeta entry : values()) {
             if (entry.name.equals(name))
                 return entry.specializer;
         }

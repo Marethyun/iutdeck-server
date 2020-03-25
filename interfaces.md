@@ -34,32 +34,34 @@ Les temps (temps de début, dates de créations, etc.) sont toujours exprimées 
 
 Lorsque l'interpellé répond à l'interpellant, il termine la connexion.
 
-> `ok()`
+### Tous les messages
+
+#### `ok()`
 
 Message sans paramètres, notifie l'autre partie que l'on a bien traité une requête.
 Ce message n'est pas utilisé pour répondre à des évènements de jeu.
 
-> `error(code, message)`
+#### `error(code, message)`
 
 Ce message est commun à tous les acteurs et permet de notifier d'une erreur. Le code associé permet d'interprêter facilement la cause de l'erreur.
 
-> `auth(username, password)` **C** vers **A**
+#### `auth(username, password)` **C** vers **A**
 
 Demande l'authentification du joueur, en transmettant son nom d'utilisateur et son mot de passe.
 
 **A** peut répondre par un message d'erreur `error` lorsque l'authentification a échoué. 
 
-> `user_token(token)` **A** vers **C**
+#### `user_token(token)` **A** vers **C**
 
 Suite à un message `auth` et au traitement avec succès de l'authentification, **A** répond avec un jeton d'utilisateur. Ce jeton est un UUID représentant la session du joueur auprès du service d'authentification. Le joueur devra le renvoyer pour modifier son compte, demander à se connecter à une partie ou se déconnecter.
 
 **C** doit garder précieusement ce jeton, ou il devra se réauthentifier.
 
-> `servers_list(user_token)` **C** vers **A**
+#### `servers_list(user_token)` **C** vers **A**
 
 Le client demande une liste de serveurs en fournissant son jeton d'utilisateur.
 
-> `servers(list)` **A** vers **C**
+#### `servers(list)` **A** vers **C**
 
 **A** répond avec la liste de serveurs, qui est un tableau d'objets JSON de la forme:
 
@@ -100,7 +102,7 @@ Exemple de message complet:
 }
 ```
 
-> `poke(name, address, port)` **S** vers **A**
+#### `poke(name, address, port)` **S** vers **A**
 
 Un serveur de jeu notifie sa présence à **A**. Cela permet à tout serveur non-officiel de faire partie de la liste envoyée aux joueurs.
 
@@ -108,7 +110,7 @@ Un serveur de jeu doit rappeler régulièrement sa présence au service central 
 
 Après la réception de ce message, **A** répond avec un message `ok` pour signifier sa compréhension.
 
-> `push_history(application_token, player1_id, player2_id, winner_id?, time_started, time_ended, events)` **S** vers **A**
+#### `push_history(application_token, player1_id, player2_id, winner_id?, time_started, time_ended, events)` **S** vers **A**
 
 Envoi d'une partie à **A** lorsqu'elle est terminée, l'ajoutant ainsi à l'historique des parties jouées.
 
@@ -129,11 +131,11 @@ Exemple d'un évènement illustrant la reddition du joueur n°123456789:
 }
 ```
 
-> `prepare_game(user_token)` **C** vers **A**
+#### `prepare_game(user_token)` **C** vers **A**
 
 **C** demande à **A** de préparer son authentification à une partie en s'authentifiant à l'aide de son jeton d'utilisateur.
 
-> `game_token(token)` **A** vers **C**
+#### `game_token(token)` **A** vers **C**
 
 **A** répond à un message `prepare_game` avec un un jeton de partie si la préparation s'est faite avec succès.
 
@@ -141,23 +143,23 @@ C'est ce jeton de partie que **C** doit envoyer à **S** lorsqu'il veut rejoindr
 
 Ce jeton est à usage unique.
 
-> `check_game(game_token)` **S** vers **A**
+#### `check_game(game_token)` **S** vers **A**
 
 Lancé par un serveur de jeu lorsqu'il veut vérifier l'authentification d'un joueur lors de sa connexion, grâce à son jeton de partie (`game_token`).
 
 Si la vérification de la partie a réussi, **A** détruit le jeton définitivement
 
-> `user(user_id, pseudonym)` **A** vers **S**
+#### `user(user_id, pseudonym)` **A** vers **S**
 
 Message envoyé par **A** à un serveur de jeu **S** suite à un message `check_game` dont le traitement a réussi.
 
 Ainsi, **S** aura vérifié l'identité du joueur et aura récupéré son identifiant et son pseudonyme.
 
-> `info()` vers **S**
+#### `info()` vers **S**
 
 Demande d'informations concernant **S**.
 
-> `server_info(name, online, rooms)` depuis **S**
+#### `server_info(name, online, rooms)` depuis **S**
 
 **S** répond à une requête `info` avec son nom, si il est configuré pour vérifier les connexions (paramètre booléen `online`), et la liste de ses salons.
 Cette liste est un tableau JSON d'objets représentant des salons.
@@ -178,13 +180,13 @@ L'identifiant des salons est important car il permet aux joueurs de les différe
 
 Ces messages initialisent la connexion entre **C** et **S** pour une partie. Lorsque leur traitement est réussi, la connexion reste active.
 
-> `join_room(room_id, game_token)` **C** vers **S**
+#### `join_room(room_id, game_token)` **C** vers **S**
 
 Le client demande à rejoindre un salon en donnant son jeton de partie, que **S** vérifie auprès de **A** utilisant le message `check_game`.
 
 Si la connexion au salon est réussie, **S** répond avec un message `ok`.
 
-> `join_room_offline(room_id, pseudonym)` **C** vers **S**
+#### `join_room_offline(room_id, pseudonym)` **C** vers **S**
 
 La même chose que `join_room` lorsque **S** est en mode 'hors-ligne' et ne vérifie pas l'identité du joueur auprès de **A**.
 
@@ -192,7 +194,7 @@ La même chose que `join_room` lorsque **S** est en mode 'hors-ligne' et ne vér
 
 Ces messages sont lancés dans un contexte de jeu, du moment où le client **C** rejoint un salon auprès du serveur **S**.
 
-> `opponent_event(event)` **S** vers **C**
+#### `opponent_event(event)` **S** vers **C**
 
 Évènement en encapsulant un autre, permet de notifier un évènement concernant l'adversaire.
 Par exemple, notifier que c'est désormais le tour de l'adversaire:
@@ -206,20 +208,20 @@ Par exemple, notifier que c'est désormais le tour de l'adversaire:
 }
 ```
 
-> `quit_room()` **C** <> **S**
+#### `quit_room()` **C** <> **S**
 
 **C** décide de quitter le salon, ou **S** l'expulse.
 La connexion se termine après l'échange.
 
-> `ready(ready)` **C** vers **S**
+#### `ready(ready)` **C** vers **S**
 
 Lorsque **C** est dans un salon, change son état (prêt à lancer le chargement de la partie ou pas).
 
-> `game_starting()` **S** vers **C**
+#### `game_starting()` **S** vers **C**
 
 Notifie que la partie démarre
 
-> `initialize(game_objects)` **S** vers **C**
+#### `initialize(game_objects)` **S** vers **C**
 
 Envoie la liste des objets de jeu sous la forme d'un tableau JSON. Un objet de jeu (gameobject) est représenté de cette manière: (exemple d'une carte)
 
@@ -240,43 +242,43 @@ Le client **C** concerné peut ainsi construire l'arbre des objets et les affich
 
 (voir les informations concernant la structure du client et aux game objects)
 
-> `all_set()` **C** <> **S**
+#### `all_set()` **C** <> **S**
 
 Lorsque les deux **C** connectés ont terminé de charger les éléments de jeu et que la partie peut être lancée, ils envoient un évènement `all_set` à **S** pour le notifier qu'ils ont tout reçu et que la partie peut commencer.
 
-> `game_started()` **S** vers **C**
+#### `game_started()` **S** vers **C**
 
 Notifie que la partie a commencé.
 
-> `your_turn()` **S** vers **C**
+#### `your_turn()` **S** vers **C**
 
 Évènement notifiant au joueur concerné que c'est à son tour de jouer.
 
-> `cast(object_id, target_id)` **C** <> **S**
+#### `cast(object_id, target_id)` **C** <> **S**
 
 Notifie qu'un élément est casté sur un autre.
 
 (voir mécaniques de cast, TODO à compléter)
 
-> `state(card_id, state)` **C** <> **S**
+#### `state(card_id, state)` **C** <> **S**
 
 Notifie que la carte spécifiée change d'état (carte ou défense).
 
-> `surrender()` ou `ff()` **C** <> **S**
+#### `surrender()` ou `ff()` **C** <> **S**
 
 Notifie que le joueur concerné se rend.
 
-> `object_change(object_id, properties)` **S** vers **C**
+#### `object_change(object_id, properties)` **S** vers **C**
 
 Notifie aux clients que les propriétés d'un objet de jeu changent.
 Par exemples: l'info d'une carte augmente, la mana d'un joueur diminue, les stats du prof changent, etc.
 
-> `game_end(reason_code)` **S** vers **C**
+#### `game_end(reason_code)` **S** vers **C**
 
 Notifie aux clients que la partie se termine.
 Cet évènement est accompagné d'un code faisant référence à la raison de la fin de partie: une reddition, un problème de réseau, un joueur a gagné, etc..
 
-> `object(object_id, type, parent, properties)` **S** vers **C**
+#### `object(object_id, type, parent, properties)` **S** vers **C**
 
 Notifie de l'insertion d'un nouvel objet côté client.
 Il ne s'agit pas forcément de la "création" d'un nouvel objet: cet évènement permet d'ajouter un objet dans la structure du jeu.
